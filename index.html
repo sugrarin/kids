@@ -27,7 +27,11 @@
 <body class="dark-theme">
     <!-- Начальный экран -->
     <div id="startScreen" class="start-screen">
-        <button id="playButton" class="play-button">▶ Play</button>
+        <div id="loadingIndicator" class="loading-indicator">
+            <div class="loading-spinner"></div>
+            <p>Загружаем картинки...</p>
+        </div>
+        <button id="playButton" class="play-button hidden">▶ ИГРАТЬ</button>
     </div>
 
     <!-- Игровой экран -->

@@ -31,8 +31,58 @@ class KidClickerGame {
             this.gameSounds.push(audio);
         });
         
+        // Предзагружаем все изображения
+        this.preloadedImages = {
+            white: {},
+            black: {}
+        };
+        this.imagesLoaded = false;
+        this.preloadImages();
+        
         this.initializeElements();
         this.bindEvents();
+    }
+
+    preloadImages() {
+        let loadedCount = 0;
+        const totalImages = this.imageList.length * 2; // белые и черные версии
+        
+        const checkAllLoaded = () => {
+            loadedCount++;
+            if (loadedCount === totalImages) {
+                this.imagesLoaded = true;
+                console.log('Все изображения предзагружены!');
+                this.showPlayButton();
+            }
+        };
+
+        // Предзагружаем белые изображения
+        this.imageList.forEach(imageName => {
+            const whiteImg = new Image();
+            whiteImg.onload = checkAllLoaded;
+            whiteImg.onerror = checkAllLoaded; // Считаем ошибки тоже завершенными
+            whiteImg.src = `images/white/${imageName}`;
+            this.preloadedImages.white[imageName] = whiteImg;
+        });
+
+        // Предзагружаем черные изображения
+        this.imageList.forEach(imageName => {
+            const blackImg = new Image();
+            blackImg.onload = checkAllLoaded;
+            blackImg.onerror = checkAllLoaded; // Считаем ошибки тоже завершенными
+            blackImg.src = `images/black/${imageName}`;
+            this.preloadedImages.black[imageName] = blackImg;
+        });
+    }
+
+    showPlayButton() {
+        // Скрываем индикатор загрузки и показываем кнопку игры
+        if (this.loadingIndicator) {
+            this.loadingIndicator.classList.add('hidden');
+        }
+        if (this.playButton) {
+            this.playButton.classList.remove('hidden');
+        }
     }
 
     initializeElements() {
@@ -44,6 +94,7 @@ class KidClickerGame {
         this.gameArea = document.getElementById('gameArea');
         this.themeIcon = document.getElementById('themeIcon');
         this.exitIcon = document.getElementById('exitIcon');
+        this.loadingIndicator = document.getElementById('loadingIndicator');
     }
 
     bindEvents() {
@@ -204,9 +255,19 @@ class KidClickerGame {
         // Создаем новое изображение
         const img = document.createElement('img');
         const randomImage = this.imageList[Math.floor(Math.random() * this.imageList.length)];
-        const imagePath = this.isDarkTheme ? `images/white/${randomImage}` : `images/black/${randomImage}`;
         
-        img.src = imagePath;
+        // Используем предзагруженные изображения если они готовы
+        const themeFolder = this.isDarkTheme ? 'white' : 'black';
+        if (this.imagesLoaded && this.preloadedImages[themeFolder][randomImage]) {
+            // Клонируем предзагруженное изображение для лучшей производительности
+            const preloadedImg = this.preloadedImages[themeFolder][randomImage];
+            img.src = preloadedImg.src;
+        } else {
+            // Fallback для случая, если изображения еще не загружены
+            const imagePath = this.isDarkTheme ? `images/white/${randomImage}` : `images/black/${randomImage}`;
+            img.src = imagePath;
+        }
+        
         img.className = 'game-image animate-in';
         img.alt = 'Game Image';
 
