@@ -1,0 +1,205 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    font-family: 'Arial', sans-serif;
+    overflow: hidden;
+    transition: background-color 0.3s ease;
+}
+
+/* Темы */
+.dark-theme {
+    background-color: #000;
+    color: #fff;
+}
+
+.light-theme {
+    background-color: #FDAA44;
+    color: #000;
+}
+
+/* Начальный экран */
+.start-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.play-button {
+    padding: 20px 40px;
+    font-size: 24px;
+    font-weight: bold;
+    border: 3px solid;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: transparent;
+}
+
+.dark-theme .play-button {
+    color: #fff;
+    border-color: #fff;
+}
+
+.dark-theme .play-button:hover {
+    background-color: #fff;
+    color: #000;
+}
+
+.light-theme .play-button {
+    color: #000;
+    border-color: #000;
+}
+
+.light-theme .play-button:hover {
+    background-color: #000;
+    color: #fff;
+}
+
+/* Игровой экран */
+.game-screen {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Контролы */
+.controls {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 15px;
+    z-index: 1000;
+}
+
+.control-button {
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    background: rgba(128, 128, 128, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.control-button:hover {
+    background: rgba(128, 128, 128, 0.5);
+    transform: scale(1.1);
+}
+
+.control-button img {
+    width: 24px;
+    height: 24px;
+}
+
+/* Игровая область */
+.game-area {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Анимированные картинки */
+.game-image {
+    position: absolute;
+    max-width: 200px;
+    max-height: 200px;
+    pointer-events: none;
+    z-index: 100;
+}
+
+/* Анимации */
+@keyframes fadeInScale {
+    0% {
+        opacity: 0;
+        transform: scale(0);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(var(--final-scale, 1.15));
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+.animate-in {
+    animation: fadeInScale 0.3s ease-out forwards;
+}
+
+.animate-out {
+    animation: fadeOut 0.3s ease-out forwards;
+}
+
+/* Полноэкранный режим */
+:fullscreen {
+    width: 100vw;
+    height: 100vh;
+}
+
+:-webkit-full-screen {
+    width: 100vw;
+    height: 100vh;
+}
+
+:-moz-full-screen {
+    width: 100vw;
+    height: 100vh;
+}
+
+/* Курсор в игровом режиме */
+.game-mode {
+    cursor: crosshair;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+    .play-button {
+        padding: 15px 30px;
+        font-size: 20px;
+    }
+    
+    .controls {
+        top: 15px;
+        right: 15px;
+        gap: 10px;
+    }
+    
+    .control-button {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .control-button img {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .game-image {
+        max-width: 150px;
+        max-height: 150px;
+    }
+}

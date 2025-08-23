@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Веселая игра для детей с анимированными картинками. Нажимайте клавиши или кликайте мышью!">
+    <meta name="keywords" content="игра для детей, анимация, картинки, развивающая игра">
+    <meta name="author" content="Kid Clicker Game">
+    <title>Kid Clicker Game</title>
+    
+    <!-- Фавиконки -->
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="manifest" href="favicon/site.webmanifest">
+    <link rel="shortcut icon" href="favicon.ico">
+    
+    <!-- Мета-теги для мобильных устройств -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="KidClicker">
+    <meta name="theme-color" content="#000000">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+    <!-- Начальный экран -->
+    <div id="startScreen" class="start-screen">
+        <button id="playButton" class="play-button">▶ Play</button>
+    </div>
+
+    <!-- Игровой экран -->
+    <div id="gameScreen" class="game-screen hidden">
+        <!-- Контролы в углу -->
+        <div class="controls">
+            <button id="themeToggle" class="control-button">
+                <img id="themeIcon" src="icons/theme_dark.svg" alt="Переключить тему">
+            </button>
+            <button id="exitButton" class="control-button">
+                <img id="exitIcon" src="icons/close_dark.svg" alt="Выйти">
+            </button>
+        </div>
+
+        <!-- Игровая область для картинок -->
+        <div id="gameArea" class="game-area"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
