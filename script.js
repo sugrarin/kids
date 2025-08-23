@@ -272,7 +272,7 @@ class KidClickerGame {
         img.alt = 'Game Image';
 
         // Рандомный финальный масштаб от 300% до 350%
-        const finalScale = 3.5 + Math.random() * 0.5;
+        const finalScale = 4 + Math.random() * 0.2;
         img.style.setProperty('--final-scale', finalScale);
 
         // Позиционируем изображение
