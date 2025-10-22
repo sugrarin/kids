@@ -1,55 +1,98 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Веселая игра для детей с анимированными картинками. Нажимайте клавиши или кликайте мышью!">
-    <meta name="keywords" content="игра для детей, анимация, картинки, развивающая игра">
-    <meta name="author" content="Kid Clicker Game">
-    <title>Kid Clicker Game</title>
-    
-    <!-- Фавиконки -->
-    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
-    <link rel="manifest" href="favicon/site.webmanifest">
-    <link rel="shortcut icon" href="favicon.ico">
-    
-    <!-- Мета-теги для мобильных устройств -->
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="KidClicker">
-    <meta name="theme-color" content="#000000">
-    
-    <link rel="stylesheet" href="style.css">
-</head>
-<body class="dark-theme">
-    <!-- Начальный экран -->
-    <div id="startScreen" class="start-screen">
-        <div id="loadingIndicator" class="loading-indicator">
-            <div class="loading-spinner"></div>
-            <p>Загружаем картинки...</p>
-        </div>
-        <button id="playButton" class="play-button hidden">▶ ИГРАТЬ</button>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Kids Games</title>
+    <style>
+      :root{
+        --bg1: #0f172a;
+        --bg2: #0b1220;
+        --accent: #06b6d4;
+        --accent2: #7c3aed;
+      }
+      html,body{height:100%;}
+      body{
+        margin:0;
+        font-family: Inter, Roboto, system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial;
+        background: linear-gradient(180deg,var(--bg1),var(--bg2));
+        color:#fff;
+        -webkit-font-smoothing:antialiased;
+        -moz-osx-font-smoothing:grayscale;
+      }
+      .wrap{
+        min-height:100vh;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        padding:24px;
+      }
+      .panel{
+        width:min(720px,100%);
+        display:flex;
+        flex-direction:column;
+        gap:20px;
+        align-items:stretch;
+      }
+      h1{
+        margin:0 0 8px 0;
+        text-align:center;
+        font-size:clamp(20px,3.8vw,28px);
+        font-weight:600;
+      }
+      p.lead{
+        margin:0 0 18px 0;
+        text-align:center;
+        opacity:0.85;
+        font-size:clamp(14px,2.2vw,16px);
+      }
+      .btn{
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        width:100%;
+        padding:28px 20px;
+        border-radius:14px;
+        text-decoration:none;
+        color:white;
+        font-size:clamp(20px,4.6vw,36px);
+        font-weight:700;
+        box-shadow:0 8px 24px rgba(2,6,23,0.6);
+        transition:transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+        border:1px solid rgba(255,255,255,0.06);
+      }
+      .btn:active{transform:translateY(1px) scale(.998)}
+      .btn:focus{outline:3px solid rgba(6,182,212,0.18); outline-offset:4px}
+      .btn--clicker{
+        background: linear-gradient(90deg,var(--accent) 0%, #10b981 100%);
+      }
+      .btn--pong{
+        background: linear-gradient(90deg,var(--accent2) 0%, #ef4444 100%);
+      }
+      .small-note{
+        margin-top:8px;
+        font-size:13px;
+        text-align:center;
+        opacity:0.8;
+      }
+      @media (min-width:720px){
+        .panel{gap:24px}
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <main class="panel" role="main">
+
+        <a class="btn btn--clicker" href="clicker/" role="button" aria-label="Открыть Clicker">
+          Clicker
+        </a>
+
+        <a class="btn btn--pong" href="terrapong/" role="button" aria-label="Открыть Terrapong">
+          Terrapong
+        </a>
+        
+      </main>
     </div>
-
-    <!-- Игровой экран -->
-    <div id="gameScreen" class="game-screen hidden">
-        <!-- Контролы в углу -->
-        <div class="controls">
-            <button id="themeToggle" class="control-button">
-                <img id="themeIcon" src="icons/theme_dark.svg" alt="Переключить тему">
-            </button>
-            <button id="exitButton" class="control-button">
-                <img id="exitIcon" src="icons/close_dark.svg" alt="Выйти">
-            </button>
-        </div>
-
-        <!-- Игровая область для картинок -->
-        <div id="gameArea" class="game-area"></div>
-    </div>
-
-    <script src="script.js"></script>
-</body>
+  </body>
 </html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terrapong</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const BallDestructionGame = () => {
+          const canvasRef = useRef(null);
+          
+          useEffect(() => {
+            const canvas = canvasRef.current;
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            
+            // Цвета
+            const LIGHT = '#e8ebe8';
+            const DARK = '#3d5a5c';
+            const BG = '#5a6d6f';
+            
+            // Функция для случайного числа в диапазоне
+            const random = (min, max) => Math.random() * (max - min) + min;
+            
+            // Функция создания шара со случайной позицией и скоростью
+            const createBall = (color, side) => {
+              const radius = 20;
+              // Разбиваем поле на левую и правую половины для стартовых позиций
+              const x = side === 'left' 
+                ? random(radius * 2, width * 0.4) 
+                : random(width * 0.6, width - radius * 2);
+              const y = random(radius * 2, height - radius * 2);
+              
+              // Базовая скорость с небольшой вариацией
+              const speed = random(8, 10);
+              // Случайный угол в зависимости от стороны
+              const angle = side === 'left'
+                ? random(-60, 60) // вправо ± 60°
+                : random(120, 240); // влево ± 60°
+              const radians = angle * Math.PI / 180;
+              
+              return {
+                x, y,
+                vx: Math.cos(radians) * speed,
+                vy: Math.sin(radians) * speed,
+                color,
+                radius
+              };
+            };
+            
+            // Создаём шары со случайными параметрами
+            const balls = [
+              createBall(LIGHT, 'left'),
+              createBall(DARK, 'right')
+            ];
+            
+            // Создаём блоки
+            const blocks = [];
+            const blockSize = 60;
+            const midPoint = width / 2; // Строго по центру
+            
+            // Создаём блоки с прямой границей по центру
+            for (let y = 0; y < height; y += blockSize) {
+              // Левая сторона - отдельные блоки (светлые)
+              for (let x = 0; x < midPoint; x += blockSize) {
+                blocks.push({
+                  x: x,
+                  y: y,
+                  width: blockSize,
+                  height: blockSize,
+                  color: LIGHT
+                });
+              }
+              
+              // Правая сторона - отдельные блоки (тёмные)
+              for (let x = midPoint; x < width; x += blockSize) {
+                blocks.push({
+                  x: x,
+                  y: y,
+                  width: blockSize,
+                  height: blockSize,
+                  color: DARK
+                });
+              }
+            }
+            
+            const checkCollision = (ball, block) => {
+              const closestX = Math.max(block.x, Math.min(ball.x, block.x + block.width));
+              const closestY = Math.max(block.y, Math.min(ball.y, block.y + block.height));
+              
+              const distX = ball.x - closestX;
+              const distY = ball.y - closestY;
+              const distance = Math.sqrt(distX * distX + distY * distY);
+              
+              return distance < ball.radius;
+            };
+            
+            let animationId;
+            
+            const animate = () => {
+              // Очистка фона
+              ctx.fillStyle = BG;
+              ctx.fillRect(0, 0, width, height);
+              
+              // Рисуем все блоки с небольшими границами
+              for (let i = 0; i < blocks.length; i++) {
+                const block = blocks[i];
+                ctx.fillStyle = block.color;
+                ctx.fillRect(block.x, block.y, block.width, block.height);
+                
+                // Добавляем тонкую границу
+                ctx.strokeStyle = BG;
+                ctx.lineWidth = 2;
+                ctx.strokeRect(block.x, block.y, block.width, block.height);
+              }
+              
+              // Обновляем шары
+              for (let ball of balls) {
+                // Движение
+                ball.x += ball.vx;
+                ball.y += ball.vy;
+                
+                // Отскок от стен
+                if (ball.x - ball.radius < 0 || ball.x + ball.radius > width) {
+                  ball.vx *= -1;
+                  ball.x = ball.x < ball.radius ? ball.radius : width - ball.radius;
+                }
+                if (ball.y - ball.radius < 0 || ball.y + ball.radius > height) {
+                  ball.vy *= -1;
+                  ball.y = ball.y < ball.radius ? ball.radius : height - ball.radius;
+                }
+                
+                // Проверка столкновений с блоками
+                for (let i = 0; i < blocks.length; i++) {
+                  const block = blocks[i];
+                  
+                  if (checkCollision(ball, block)) {
+                    if (ball.color !== block.color) {
+                      // Шар перекрашивает блок противоположного цвета в свой цвет
+                      block.color = ball.color;
+                      
+                      // И отскакивает от него
+                      const blockCenterX = block.x + block.width / 2;
+                      const blockCenterY = block.y + block.height / 2;
+                      
+                      const dx = Math.abs(ball.x - blockCenterX);
+                      const dy = Math.abs(ball.y - blockCenterY);
+                      
+                      if (dx > dy) {
+                        ball.vx *= -1;
+                        // Отодвигаем шар от блока
+                        if (ball.x < blockCenterX) {
+                          ball.x = block.x - ball.radius;
+                        } else {
+                          ball.x = block.x + block.width + ball.radius;
+                        }
+                      } else {
+                        ball.vy *= -1;
+                        // Отодвигаем шар от блока
+                        if (ball.y < blockCenterY) {
+                          ball.y = block.y - ball.radius;
+                        } else {
+                          ball.y = block.y + block.height + ball.radius;
+                        }
+                      }
+                      
+                      break;
+                    }
+                    // Если блок своего цвета - шар просто движется по нему без отскока
+                  }
+                }
+                
+                // Рисуем шар
+                ctx.fillStyle = ball.color;
+                ctx.beginPath();
+                ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Добавляем обводку противоположного цвета
+                ctx.strokeStyle = ball.color === LIGHT ? DARK : LIGHT;
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+                ctx.stroke();
+              }
+              
+              animationId = requestAnimationFrame(animate);
+            };
+            
+            animate();
+            
+            return () => {
+              if (animationId) {
+                cancelAnimationFrame(animationId);
+              }
+            };
+          }, []);
+          
+          return (
+            <div className="flex flex-col items-center justify-center min-h-screen bg-gray-800 p-4">
+              <div className="mb-4">
+              </div>
+              
+              <canvas
+                ref={canvasRef}
+                width={1080}
+                height={1080}
+                className="border-4 border-gray-700 rounded-lg shadow-2xl max-w-full"
+                style={{ maxHeight: '80vh' }}
+              />
+              
+            </div>
+          );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<BallDestructionGame />);
+    </script>
+</body>
+</html>

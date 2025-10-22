@@ -23,13 +23,17 @@ class KidClickerGame {
             'sounds/game-ball-3.wav'
         ];
         this.gameSounds = [];
+        this.isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        this.audioContext = null;
+        this.soundBuffer = {};
         
-        // Предзагружаем все звуки
-        this.soundFiles.forEach(soundFile => {
-            const audio = new Audio(soundFile);
-            audio.preload = 'auto';
-            this.gameSounds.push(audio);
-        });
+        // Для Safari используем Web Audio API для лучшей производительности
+        if (this.isSafari) {
+            this.initAudioContext();
+        } else {
+            // Для других браузеров используем стандартные Audio элементы
+            this.preloadSounds();
+        }
         
         // Предзагружаем все изображения
         this.preloadedImages = {
@@ -41,6 +45,45 @@ class KidClickerGame {
         
         this.initializeElements();
         this.bindEvents();
+    }
+
+    initAudioContext() {
+        try {
+            // Создаем аудиоконтекст для Safari
+            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            
+            // Предзагружаем все звуки в буферы
+            Promise.all(this.soundFiles.map(soundFile => {
+                return fetch(soundFile)
+                    .then(response => response.arrayBuffer())
+                    .then(arrayBuffer => this.audioContext.decodeAudioData(arrayBuffer))
+                    .then(audioBuffer => {
+                        const fileName = soundFile.split('/').pop();
+                        this.soundBuffer[fileName] = audioBuffer;
+                    });
+            })).then(() => {
+                console.log('Все звуки загружены в Web Audio API');
+            }).catch(error => {
+                console.error('Ошибка загрузки звуков:', error);
+                // Fallback к обычным Audio элементам
+                this.isSafari = false;
+                this.preloadSounds();
+            });
+        } catch (error) {
+            console.error('Web Audio API не поддерживается:', error);
+            // Fallback к обычным Audio элементам
+            this.isSafari = false;
+            this.preloadSounds();
+        }
+    }
+
+    preloadSounds() {
+        // Предзагружаем все звуки
+        this.soundFiles.forEach(soundFile => {
+            const audio = new Audio(soundFile);
+            audio.preload = 'auto';
+            this.gameSounds.push(audio);
+        });
     }
 
     preloadImages() {
@@ -223,15 +266,35 @@ class KidClickerGame {
 
     playSound() {
         try {
-            // Выбираем случайный звук из массива
-            const randomIndex = Math.floor(Math.random() * this.gameSounds.length);
-            const randomSound = this.gameSounds[randomIndex];
-            
-            // Сбрасываем время воспроизведения для повторного проигрывания
-            randomSound.currentTime = 0;
-            randomSound.play().catch(error => {
-                console.log('Не удалось воспроизвести звук:', error);
-            });
+            if (this.isSafari && this.audioContext) {
+                // Используем Web Audio API для Safari
+                if (this.audioContext.state === 'suspended') {
+                    this.audioContext.resume();
+                }
+                
+                const soundKeys = Object.keys(this.soundBuffer);
+                if (soundKeys.length === 0) return;
+                
+                const randomKey = soundKeys[Math.floor(Math.random() * soundKeys.length)];
+                const audioBuffer = this.soundBuffer[randomKey];
+                
+                const source = this.audioContext.createBufferSource();
+                source.buffer = audioBuffer;
+                source.connect(this.audioContext.destination);
+                source.start(0);
+            } else {
+                // Используем стандартные Audio элементы для других браузеров
+                if (this.gameSounds.length === 0) return;
+                
+                const randomIndex = Math.floor(Math.random() * this.gameSounds.length);
+                const randomSound = this.gameSounds[randomIndex];
+                
+                // Сбрасываем время воспроизведения для повторного проигрывания
+                randomSound.currentTime = 0;
+                randomSound.play().catch(error => {
+                    console.log('Не удалось воспроизвести звук:', error);
+                });
+            }
         } catch (error) {
             console.log('Ошибка при воспроизведении звука:', error);
         }
