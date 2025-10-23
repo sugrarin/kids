@@ -366,8 +366,8 @@ class KidClickerGame {
         }
 
         // Обновляем иконки
-        const themeIconPath = this.isDarkTheme ? 'icons/theme_dark.svg' : 'icons/theme_light.svg';
-        const exitIconPath = this.isDarkTheme ? 'icons/close_dark.svg' : 'icons/close_light.svg';
+        const themeIconPath = this.isDarkTheme ? '/assets/icons/theme_dark.svg' : '/assets/icons/theme_light.svg';
+        const exitIconPath = this.isDarkTheme ? '/assets/icons/close_dark.svg' : '/assets/icons/close_light.svg';
         
         this.themeIcon.src = themeIconPath;
         this.exitIcon.src = exitIconPath;
@@ -394,6 +394,9 @@ class KidClickerGame {
         // Очищаем игровую область
         this.gameArea.innerHTML = '';
         this.currentImage = null;
+        
+        // Возвращаемся на главную страницу
+        window.location.href = '/';
     }
 
     handleFullscreenChange() {

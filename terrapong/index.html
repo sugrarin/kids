@@ -7,7 +7,71 @@
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            background-color: #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            padding: 3%;
+            box-sizing: border-box;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 1080px;
+            height: 100%;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 1080px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: flex-end;
+            width: 100%;
+            margin-bottom: 16px;
+        }
+        
+        .close-button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 2px 14px 8px 14px;
+            cursor: pointer;
+            font-size: 40px;
+            border-radius: 40px;
+            line-height: 1;
+        }
+        
+        .close-button:hover {
+            background-color: #555;
+        }
+        
+        .game-canvas {
+            border: 2px solid #333;
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
 </head>
 <body>
     <div id="root"></div>
@@ -26,9 +90,9 @@
             const height = canvas.height;
             
             // Цвета
-            const LIGHT = '#e8ebe8';
-            const DARK = '#3d5a5c';
-            const BG = '#5a6d6f';
+            const LIGHT = '#FFF';
+            const DARK = '#111';
+            const BG = '#111111';
             
             // Функция для случайного числа в диапазоне
             const random = (min, max) => Math.random() * (max - min) + min;
@@ -43,7 +107,7 @@
               const y = random(radius * 2, height - radius * 2);
               
               // Базовая скорость с небольшой вариацией
-              const speed = random(8, 10);
+              const speed = random(12, 15);
               // Случайный угол в зависимости от стороны
               const angle = side === 'left'
                 ? random(-60, 60) // вправо ± 60°
@@ -208,18 +272,23 @@
           }, []);
           
           return (
-            <div className="flex flex-col items-center justify-center min-h-screen bg-gray-800 p-4">
-              <div className="mb-4">
+            <div className="container">
+              <div className="header">
+                <button
+                  onClick={() => window.location.href = '/'}
+                  className="close-button"
+                >
+                  ×
+                </button>
               </div>
               
               <canvas
                 ref={canvasRef}
                 width={1080}
                 height={1080}
-                className="border-4 border-gray-700 rounded-lg shadow-2xl max-w-full"
+                className="game-canvas"
                 style={{ maxHeight: '80vh' }}
               />
-              
             </div>
           );
         };
