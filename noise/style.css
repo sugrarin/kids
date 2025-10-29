@@ -1,0 +1,92 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+.play-pause-btn {
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #8B4513, #A0522D);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 8px 25px rgba(139, 69, 19, 0.4);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.play-pause-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 35px rgba(139, 69, 19, 0.6);
+}
+
+.play-pause-btn:active {
+    transform: scale(0.98);
+}
+
+.icon {
+    width: 100px;
+    height: 100px;
+    fill: white;
+    transition: opacity 0.2s ease;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Safari optimizations */
+@supports (-webkit-appearance: none) {
+    .play-pause-btn {
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+    }
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+    .play-pause-btn {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .icon {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+/* Animation for playing state */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 8px 25px rgba(139, 69, 19, 0.4);
+    }
+    50% {
+        box-shadow: 0 8px 35px rgba(139, 69, 19, 0.7);
+    }
+    100% {
+        box-shadow: 0 8px 25px rgba(139, 69, 19, 0.4);
+    }
+}
+
+.playing {
+    animation: pulse 2s infinite;
+}

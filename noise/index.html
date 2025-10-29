@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brown Noise Player</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Brown Noise">
+    <meta name="theme-color" content="#1a1a1a">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <button id="playPauseBtn" class="play-pause-btn">
+        <svg id="playIcon" class="icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8 5v14l11-7z"/>
+        </svg>
+        <svg id="pauseIcon" class="icon hidden" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+        </svg>
+    </button>
+    
+    <audio id="audioPlayer" loop crossorigin="anonymous" preload="auto"></audio>
+    
+    <script src="script.js"></script>
+</body>
+</html>
